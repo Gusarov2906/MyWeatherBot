@@ -1,17 +1,29 @@
-import configparser
 import requests
-import sys
+
 appid = "09f2551c5cf86a1131a05a2bcb397626"
 city_id = "463829"
+res=[]
+
 try:
-    res = requests.get("http://api.openweathermap.org/data/2.5/weather",
-                 params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
-    data = res.json()
-    print("data:",data)
-    print("conditions:", data['weather'][0]['description'])
-    print("temp:", data['main']['temp'])
-    print("temp_min:", data['main']['temp_min'])
-    print("temp_max:", data['main']['temp_max'])
+    res.append(requests.get(f"http://api.openweathermap.org/data/2.5/weather?id={city_id}&APPID={appid}&units=metric"))
+    res.append(requests.get(f"http://api.openweathermap.org/data/2.5/forecast?id={city_id}&APPID={appid}&units=metric"))
+    weather = res[0].json()
+    forecast = res[1].json()
+
+    with open("data_cur_weather.txt",'w') as file:
+        file.write("WEATHER: \n")
+        for item in weather.items():
+            file.write("\n" +str(item))
+
+    with open("data_weather.txt",'w') as file:
+        file.write("FORECAST: \n")
+        for time in forecast["list"]:
+            file.write("\n\n")
+            for item in time.items():
+                file.write("\n" +str(item))
+
+    print("Upload to file was successful!")
+
 except Exception as e:
-    print("Exception (weather):", e)
+    print("Exception: ", e)
     pass

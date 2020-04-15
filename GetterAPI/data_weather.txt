@@ -1,0 +1,388 @@
+FORECAST: 
+
+
+
+('dt', 1586984400)
+('main', {'temp': -0.48, 'feels_like': -4.95, 'temp_min': -0.48, 'temp_max': 0.68, 'pressure': 997, 'sea_level': 997, 'grnd_level': 971, 'humidity': 89, 'temp_kf': -1.16})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 99})
+('wind', {'speed': 3.15, 'deg': 245})
+('snow', {'3h': 0.48})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-15 21:00:00')
+
+
+('dt', 1586995200)
+('main', {'temp': -0.01, 'feels_like': -5.27, 'temp_min': -0.01, 'temp_max': 0.86, 'pressure': 997, 'sea_level': 997, 'grnd_level': 971, 'humidity': 88, 'temp_kf': -0.87})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 99})
+('wind', {'speed': 4.33, 'deg': 278})
+('snow', {'3h': 1.02})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-16 00:00:00')
+
+
+('dt', 1587006000)
+('main', {'temp': 0.12, 'feels_like': -4.58, 'temp_min': 0.12, 'temp_max': 0.7, 'pressure': 996, 'sea_level': 996, 'grnd_level': 970, 'humidity': 89, 'temp_kf': -0.58})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 3.58, 'deg': 272})
+('snow', {'3h': 0.62})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-16 03:00:00')
+
+
+('dt', 1587016800)
+('main', {'temp': 2.23, 'feels_like': -3.49, 'temp_min': 2.23, 'temp_max': 2.52, 'pressure': 995, 'sea_level': 995, 'grnd_level': 969, 'humidity': 74, 'temp_kf': -0.29})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 99})
+('wind', {'speed': 4.96, 'deg': 261})
+('snow', {'3h': 0.21})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-16 06:00:00')
+
+
+('dt', 1587027600)
+('main', {'temp': 4.66, 'feels_like': -1.71, 'temp_min': 4.66, 'temp_max': 4.66, 'pressure': 992, 'sea_level': 992, 'grnd_level': 966, 'humidity': 65, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 99})
+('wind', {'speed': 6, 'deg': 230})
+('snow', {'3h': 0.31})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-16 09:00:00')
+
+
+('dt', 1587038400)
+('main', {'temp': 2.3, 'feels_like': -4.25, 'temp_min': 2.3, 'temp_max': 2.3, 'pressure': 987, 'sea_level': 987, 'grnd_level': 961, 'humidity': 88, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}, {'id': 601, 'main': 'Snow', 'description': 'snow', 'icon': '13d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 6.63, 'deg': 195})
+('rain', {'3h': 2.02})
+('snow', {'3h': 2.02})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-16 12:00:00')
+
+
+('dt', 1587049200)
+('main', {'temp': 3.31, 'feels_like': -3, 'temp_min': 3.31, 'temp_max': 3.31, 'pressure': 985, 'sea_level': 985, 'grnd_level': 959, 'humidity': 89, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 6.54, 'deg': 265})
+('rain', {'3h': 2.5})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-16 15:00:00')
+
+
+('dt', 1587060000)
+('main', {'temp': 3.36, 'feels_like': -2.9, 'temp_min': 3.36, 'temp_max': 3.36, 'pressure': 986, 'sea_level': 986, 'grnd_level': 960, 'humidity': 79, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 6.12, 'deg': 289})
+('rain', {'3h': 0.83})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-16 18:00:00')
+
+
+('dt', 1587070800)
+('main', {'temp': 2.2, 'feels_like': -4.01, 'temp_min': 2.2, 'temp_max': 2.2, 'pressure': 988, 'sea_level': 988, 'grnd_level': 962, 'humidity': 83, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 5.96, 'deg': 303})
+('snow', {'3h': 0.12})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-16 21:00:00')
+
+
+('dt', 1587081600)
+('main', {'temp': 1.23, 'feels_like': -4.04, 'temp_min': 1.23, 'temp_max': 1.23, 'pressure': 990, 'sea_level': 990, 'grnd_level': 964, 'humidity': 90, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 4.65, 'deg': 312})
+('snow', {'3h': 0.58})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-17 00:00:00')
+
+
+('dt', 1587092400)
+('main', {'temp': 1.12, 'feels_like': -5.07, 'temp_min': 1.12, 'temp_max': 1.12, 'pressure': 993, 'sea_level': 993, 'grnd_level': 967, 'humidity': 83, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 5.72, 'deg': 306})
+('snow', {'3h': 0.28})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-17 03:00:00')
+
+
+('dt', 1587103200)
+('main', {'temp': 2.33, 'feels_like': -4.47, 'temp_min': 2.33, 'temp_max': 2.33, 'pressure': 995, 'sea_level': 995, 'grnd_level': 969, 'humidity': 75, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04d'}])
+('clouds', {'all': 99})
+('wind', {'speed': 6.55, 'deg': 295})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-17 06:00:00')
+
+
+('dt', 1587114000)
+('main', {'temp': 4.24, 'feels_like': -2.78, 'temp_min': 4.24, 'temp_max': 4.24, 'pressure': 997, 'sea_level': 997, 'grnd_level': 970, 'humidity': 66, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 96})
+('wind', {'speed': 6.89, 'deg': 290})
+('snow', {'3h': 0.31})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-17 09:00:00')
+
+
+('dt', 1587124800)
+('main', {'temp': 5.47, 'feels_like': -0.88, 'temp_min': 5.47, 'temp_max': 5.47, 'pressure': 998, 'sea_level': 998, 'grnd_level': 972, 'humidity': 60, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 94})
+('wind', {'speed': 5.91, 'deg': 289})
+('rain', {'3h': 0.59})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-17 12:00:00')
+
+
+('dt', 1587135600)
+('main', {'temp': 3.83, 'feels_like': -2.02, 'temp_min': 3.83, 'temp_max': 3.83, 'pressure': 999, 'sea_level': 999, 'grnd_level': 973, 'humidity': 67, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 99})
+('wind', {'speed': 5.18, 'deg': 296})
+('snow', {'3h': 0.89})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-17 15:00:00')
+
+
+('dt', 1587146400)
+('main', {'temp': 1.02, 'feels_like': -3.49, 'temp_min': 1.02, 'temp_max': 1.02, 'pressure': 1000, 'sea_level': 1000, 'grnd_level': 974, 'humidity': 82, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}])
+('clouds', {'all': 98})
+('wind', {'speed': 3.27, 'deg': 274})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-17 18:00:00')
+
+
+('dt', 1587157200)
+('main', {'temp': 0.1, 'feels_like': -4.41, 'temp_min': 0.1, 'temp_max': 0.1, 'pressure': 1000, 'sea_level': 1000, 'grnd_level': 974, 'humidity': 87, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}])
+('clouds', {'all': 97})
+('wind', {'speed': 3.25, 'deg': 268})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-17 21:00:00')
+
+
+('dt', 1587168000)
+('main', {'temp': -0.98, 'feels_like': -5.43, 'temp_min': -0.98, 'temp_max': -0.98, 'pressure': 1001, 'sea_level': 1001, 'grnd_level': 974, 'humidity': 94, 'temp_kf': 0})
+('weather', [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04n'}])
+('clouds', {'all': 73})
+('wind', {'speed': 3.16, 'deg': 277})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-18 00:00:00')
+
+
+('dt', 1587178800)
+('main', {'temp': -1.21, 'feels_like': -5.89, 'temp_min': -1.21, 'temp_max': -1.21, 'pressure': 1002, 'sea_level': 1002, 'grnd_level': 975, 'humidity': 94, 'temp_kf': 0})
+('weather', [{'id': 800, 'main': 'Clear', 'description': 'clear sky', 'icon': '01d'}])
+('clouds', {'all': 0})
+('wind', {'speed': 3.45, 'deg': 265})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-18 03:00:00')
+
+
+('dt', 1587189600)
+('main', {'temp': 2.45, 'feels_like': -3.26, 'temp_min': 2.45, 'temp_max': 2.45, 'pressure': 1002, 'sea_level': 1002, 'grnd_level': 976, 'humidity': 73, 'temp_kf': 0})
+('weather', [{'id': 801, 'main': 'Clouds', 'description': 'few clouds', 'icon': '02d'}])
+('clouds', {'all': 12})
+('wind', {'speed': 4.95, 'deg': 277})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-18 06:00:00')
+
+
+('dt', 1587200400)
+('main', {'temp': 3.99, 'feels_like': -1.85, 'temp_min': 3.99, 'temp_max': 3.99, 'pressure': 1003, 'sea_level': 1003, 'grnd_level': 976, 'humidity': 66, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 97})
+('wind', {'speed': 5.16, 'deg': 285})
+('snow', {'3h': 0.52})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-18 09:00:00')
+
+
+('dt', 1587211200)
+('main', {'temp': 5.47, 'feels_like': 0.15, 'temp_min': 5.47, 'temp_max': 5.47, 'pressure': 1003, 'sea_level': 1003, 'grnd_level': 977, 'humidity': 59, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04d'}])
+('clouds', {'all': 94})
+('wind', {'speed': 4.39, 'deg': 281})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-18 12:00:00')
+
+
+('dt', 1587222000)
+('main', {'temp': 4.33, 'feels_like': -0.52, 'temp_min': 4.33, 'temp_max': 4.33, 'pressure': 1004, 'sea_level': 1004, 'grnd_level': 978, 'humidity': 66, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 3.8, 'deg': 294})
+('snow', {'3h': 0.79})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-18 15:00:00')
+
+
+('dt', 1587232800)
+('main', {'temp': 1.86, 'feels_like': -2.6, 'temp_min': 1.86, 'temp_max': 1.86, 'pressure': 1006, 'sea_level': 1006, 'grnd_level': 979, 'humidity': 79, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10n'}, {'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 3.25, 'deg': 298})
+('rain', {'3h': 0.15})
+('snow', {'3h': 0.15})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-18 18:00:00')
+
+
+('dt', 1587243600)
+('main', {'temp': 0.82, 'feels_like': -3.83, 'temp_min': 0.82, 'temp_max': 0.82, 'pressure': 1007, 'sea_level': 1007, 'grnd_level': 980, 'humidity': 85, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 3.52, 'deg': 305})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-18 21:00:00')
+
+
+('dt', 1587254400)
+('main', {'temp': 0.7, 'feels_like': -4.27, 'temp_min': 0.7, 'temp_max': 0.7, 'pressure': 1008, 'sea_level': 1008, 'grnd_level': 981, 'humidity': 88, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 100})
+('wind', {'speed': 4.05, 'deg': 299})
+('snow', {'3h': 0.4})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-19 00:00:00')
+
+
+('dt', 1587265200)
+('main', {'temp': 0.43, 'feels_like': -4.69, 'temp_min': 0.43, 'temp_max': 0.43, 'pressure': 1009, 'sea_level': 1009, 'grnd_level': 982, 'humidity': 86, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 4.16, 'deg': 314})
+('snow', {'3h': 0.3})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-19 03:00:00')
+
+
+('dt', 1587276000)
+('main', {'temp': 1.67, 'feels_like': -3.03, 'temp_min': 1.67, 'temp_max': 1.67, 'pressure': 1009, 'sea_level': 1009, 'grnd_level': 983, 'humidity': 79, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04d'}])
+('clouds', {'all': 98})
+('wind', {'speed': 3.56, 'deg': 298})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-19 06:00:00')
+
+
+('dt', 1587286800)
+('main', {'temp': 4.17, 'feels_like': -0.1, 'temp_min': 4.17, 'temp_max': 4.17, 'pressure': 1010, 'sea_level': 1010, 'grnd_level': 984, 'humidity': 66, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04d'}])
+('clouds', {'all': 99})
+('wind', {'speed': 2.94, 'deg': 296})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-19 09:00:00')
+
+
+('dt', 1587297600)
+('main', {'temp': 6.34, 'feels_like': 2.43, 'temp_min': 6.34, 'temp_max': 6.34, 'pressure': 1010, 'sea_level': 1010, 'grnd_level': 984, 'humidity': 56, 'temp_kf': 0})
+('weather', [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04d'}])
+('clouds', {'all': 98})
+('wind', {'speed': 2.39, 'deg': 268})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-19 12:00:00')
+
+
+('dt', 1587308400)
+('main', {'temp': 5.38, 'feels_like': 1.26, 'temp_min': 5.38, 'temp_max': 5.38, 'pressure': 1011, 'sea_level': 1011, 'grnd_level': 984, 'humidity': 61, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 100})
+('wind', {'speed': 2.75, 'deg': 255})
+('rain', {'3h': 0.36})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-19 15:00:00')
+
+
+('dt', 1587319200)
+('main', {'temp': 2.04, 'feels_like': -1.33, 'temp_min': 2.04, 'temp_max': 2.04, 'pressure': 1012, 'sea_level': 1012, 'grnd_level': 985, 'humidity': 77, 'temp_kf': 0})
+('weather', [{'id': 600, 'main': 'Snow', 'description': 'light snow', 'icon': '13n'}])
+('clouds', {'all': 87})
+('wind', {'speed': 1.67, 'deg': 278})
+('snow', {'3h': 0.1})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-19 18:00:00')
+
+
+('dt', 1587330000)
+('main', {'temp': 0.52, 'feels_like': -2.37, 'temp_min': 0.52, 'temp_max': 0.52, 'pressure': 1014, 'sea_level': 1014, 'grnd_level': 987, 'humidity': 85, 'temp_kf': 0})
+('weather', [{'id': 801, 'main': 'Clouds', 'description': 'few clouds', 'icon': '02n'}])
+('clouds', {'all': 16})
+('wind', {'speed': 0.96, 'deg': 329})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-19 21:00:00')
+
+
+('dt', 1587340800)
+('main', {'temp': 0.17, 'feels_like': -2.96, 'temp_min': 0.17, 'temp_max': 0.17, 'pressure': 1015, 'sea_level': 1015, 'grnd_level': 988, 'humidity': 87, 'temp_kf': 0})
+('weather', [{'id': 800, 'main': 'Clear', 'description': 'clear sky', 'icon': '01n'}])
+('clouds', {'all': 8})
+('wind', {'speed': 1.29, 'deg': 37})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-20 00:00:00')
+
+
+('dt', 1587351600)
+('main', {'temp': 0.19, 'feels_like': -3.43, 'temp_min': 0.19, 'temp_max': 0.19, 'pressure': 1017, 'sea_level': 1017, 'grnd_level': 990, 'humidity': 86, 'temp_kf': 0})
+('weather', [{'id': 800, 'main': 'Clear', 'description': 'clear sky', 'icon': '01d'}])
+('clouds', {'all': 0})
+('wind', {'speed': 1.96, 'deg': 27})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-20 03:00:00')
+
+
+('dt', 1587362400)
+('main', {'temp': 5.17, 'feels_like': 1.37, 'temp_min': 5.17, 'temp_max': 5.17, 'pressure': 1019, 'sea_level': 1019, 'grnd_level': 992, 'humidity': 63, 'temp_kf': 0})
+('weather', [{'id': 800, 'main': 'Clear', 'description': 'clear sky', 'icon': '01d'}])
+('clouds', {'all': 0})
+('wind', {'speed': 2.34, 'deg': 33})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-20 06:00:00')
+
+
+('dt', 1587373200)
+('main', {'temp': 8.29, 'feels_like': 4.59, 'temp_min': 8.29, 'temp_max': 8.29, 'pressure': 1020, 'sea_level': 1020, 'grnd_level': 994, 'humidity': 50, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 0})
+('wind', {'speed': 2.15, 'deg': 38})
+('rain', {'3h': 0.12})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-20 09:00:00')
+
+
+('dt', 1587384000)
+('main', {'temp': 8.74, 'feels_like': 4.41, 'temp_min': 8.74, 'temp_max': 8.74, 'pressure': 1021, 'sea_level': 1021, 'grnd_level': 994, 'humidity': 50, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 27})
+('wind', {'speed': 3.12, 'deg': 20})
+('rain', {'3h': 0.53})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-20 12:00:00')
+
+
+('dt', 1587394800)
+('main', {'temp': 8.49, 'feels_like': 4.5, 'temp_min': 8.49, 'temp_max': 8.49, 'pressure': 1021, 'sea_level': 1021, 'grnd_level': 995, 'humidity': 50, 'temp_kf': 0})
+('weather', [{'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'}])
+('clouds', {'all': 49})
+('wind', {'speed': 2.6, 'deg': 2})
+('rain', {'3h': 0.16})
+('sys', {'pod': 'd'})
+('dt_txt', '2020-04-20 15:00:00')
+
+
+('dt', 1587405600)
+('main', {'temp': 3.91, 'feels_like': 0.1, 'temp_min': 3.91, 'temp_max': 3.91, 'pressure': 1022, 'sea_level': 1022, 'grnd_level': 996, 'humidity': 69, 'temp_kf': 0})
+('weather', [{'id': 802, 'main': 'Clouds', 'description': 'scattered clouds', 'icon': '03n'}])
+('clouds', {'all': 47})
+('wind', {'speed': 2.36, 'deg': 11})
+('sys', {'pod': 'n'})
+('dt_txt', '2020-04-20 18:00:00')
