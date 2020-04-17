@@ -3,6 +3,7 @@
 import json
 import bot_api
 import time
+import telebot
 
 CHANNEL_NAME = '@gusarov2906_channel'
 
@@ -19,13 +20,24 @@ try:
             feels_like = f['main']['feels_like']
             pressure = f['main']['pressure']
             humidity = f['main']['humidity']
+            location = f['name']
+            if (weather_status == "Clouds"):
+                weather_status = "Облачно"
+            weather_message = f"Статус погоды: {weather_status} \nТекущая температура: {cur_temp} ℃ \nМаксимальная температура: {cur_temp_max} ℃ \nМинимальная температура: {cur_temp_min} ℃ \nОщущается как: {feels_like} ℃"
+
     bot = bot_api.create_bot()
+
+    keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
+    keyboard1.row('Погода сейчас', 'Погода сегодня','Прогноз погоды')
+
     @bot.message_handler(commands=['start'])
     def start_message(message):
-        while(True):
-            bot.send_message(CHANNEL_NAME, 'Привет, ты написал мне /start')
-            bot.send_message(CHANNEL_NAME, weather_status)
-            time.sleep(60)
+        bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}', reply_markup=keyboard1)
+
+    @bot.message_handler(content_types=['text'])
+    def send_text(message):
+        if message.text == 'Погода сейчас':
+                        bot.send_message(message.chat.id,weather_message)
 
     print(weather_status)
     print(weather_description)
@@ -38,12 +50,9 @@ try:
 
     bot.polling()
 
-
-
 #    with open("data_weather.txt",'r') as file:
 #            f = file.read()
 #            print(f)
-
 
 except Exception as e:
     print("Exception: ", e)
