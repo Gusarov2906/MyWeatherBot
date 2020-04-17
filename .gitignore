@@ -1,2 +1,4 @@
 BOT/__pycache__
 GetterAPI/__pycache__
+BOT/bot_api.py
+GetterAPI/get_api.py
