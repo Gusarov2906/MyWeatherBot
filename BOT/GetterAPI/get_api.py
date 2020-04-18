@@ -1,10 +1,12 @@
 #>cd E:\PROJECTS\PythonProjects\MyWeatherBot\MyWeatherBot\GetterAPI>
 import json
+from GetterAPI.OpenWeatherAPI import get_data
 #import OpenWeatherAPI
 def get():
     city_id = "463829"
     try:
-        weather,forecast = OpenWeatherAPI.get_data(city_id)
+        weather,forecast = get_data(city_id)
+    #    weather,forecast = OpenWeatherAPI.get_data(city_id)
         with open(r"E:\PROJECTS\PythonProjects\MyWeatherBot\MyWeatherBot\BOT\data_cur_weather.json",'w',encoding='utf-8') as file:
     #        file.write("WEATHER: \n")
     #        for item in weather.items():
@@ -27,5 +29,4 @@ def get():
         pass
 
 if __name__ == '__main__':
-    import OpenWeatherAPI
     get()
