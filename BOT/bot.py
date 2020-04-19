@@ -7,8 +7,11 @@ import time
 import telebot
 import datetime
 from GetterAPI.get_api import get
+from threading import Thread
 
 CHANNEL_NAME = '@gusarov2906_channel'
+
+bot = bot_api.create_bot()
 
 def fix_wd(i):
     if (i==7):
@@ -45,6 +48,7 @@ def get_data_from_file_forecast(weekday_today):
             weather_message = []
             weather_message_forecast=[]
             weather_message_today=[]
+            weather_message_tomorrow=[]
 
             last_date = ""
             i = 0
@@ -74,20 +78,107 @@ def get_data_from_file_forecast(weekday_today):
                 pressure = item['main']['pressure']
                 humidity = item['main']['humidity']
 
-                if (datetime.datetime.today().strftime("%d")==date[8:10]):
+                if ((datetime.date.today() + datetime.timedelta(days=1)).strftime("%d")==date[8:10]):
                     if (i==0):
-                        weather_message_today.append(f"\nПрогноз на сегодня ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        #weather_message_today.append(f"\nПрогноз на сегодня ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        weather_message_tomorrow.append(f"\nПрогноз на завтра ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Ощущается как: {feels_like} ℃\n Влажность: {humidity} %")
                         i=1
                     else:
-                        weather_message_today.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        #weather_message_today.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        weather_message_tomorrow.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Ощущается как: {feels_like} ℃ \n Влажность: {humidity} %")
 
+            i = 0
+            for item in f['list']:
+                date = item['dt_txt']
+                weather_description = item['weather'][0]['description']
+                cur_temp = item['main']['temp']
+                cur_temp_min = item['main']['temp_min']
+                cur_temp_max = item['main']['temp_max']
+                feels_like = item['main']['feels_like']
+                pressure = item['main']['pressure']
+                humidity = item['main']['humidity']
+
+                if (datetime.datetime.today().strftime("%d")==date[8:10]):
+                    if (i==0):
+                        #weather_message_today.append(f"\nПрогноз на сегодня ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        weather_message_today.append(f"\nПрогноз на сегодня ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Ощущается как: {feels_like} ℃\n Влажность: {humidity} %")
+                        i=1
+                    else:
+                        #weather_message_today.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        weather_message_today.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Ощущается как: {feels_like} ℃ \n Влажность: {humidity} %")
             weather_message.append(weather_message_forecast)
             weather_message.append(weather_message_today)
+            weather_message.append(weather_message_tomorrow)
             return weather_message
 
     except Exception as e:
         print("Exception: ", e)
         pass
+
+def sending_morning_mes(bot,message):
+    now = datetime.datetime.now()
+    year = int(now.strftime("%Y"))
+    month = int(now.strftime("%m"))
+    day = int(now.strftime("%d"))
+    hours = int(now.strftime("%H"))
+    minutes = int(now.strftime("%M"))
+    if (hours >= 9):
+        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        day = int(tomorrow.strftime("%d"))
+    t_time = datetime.datetime(year,month,day,9,0)
+    #print(t_time)
+    #print(now)
+    #print((t_time -now).seconds)
+    time.sleep((t_time -now).seconds)
+    get()
+    weather_messages = []
+    weather_message = "Доброе утро!)"
+    weather_messages = get_data_from_file_forecast(weekday_today)
+    for item in weather_messages[1]:
+        weather_message = weather_message + "\n" + item
+    bot.send_message(message.chat.id,weather_message)
+    while(True):
+        time.sleep(86400)
+        get()
+        weather_message = ""
+        weather_message = "Доброе утро!)"
+        weather_messages = get_data_from_file_forecast(weekday_today)
+        for item in weather_messages[1]:
+            weather_message = weather_message + "\n" + item
+        bot.send_message(message.chat.id,weather_message)
+
+def sending_evening_mes(bot,message):
+    now = datetime.datetime.now()
+    year = int(now.strftime("%Y"))
+    month = int(now.strftime("%m"))
+    day = int(now.strftime("%d"))
+    hours = int(now.strftime("%H"))
+    minutes = int(now.strftime("%M"))
+    if (hours >= 21):
+        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        day = int(tomorrow.strftime("%d"))
+    t_time = datetime.datetime(year,month,day,21,00)
+    #print(t_time)
+    #print(now)
+    #print((t_time -now).seconds)
+    time.sleep((t_time -now).seconds)
+    get()
+    weather_message = "Добрый вечер!)"
+    weather_messages = get_data_from_file_forecast(weekday_today)
+    for item in weather_messages[2]:
+        weather_message = weather_message + "\n" + item
+    bot.send_message(message.chat.id,weather_message)
+    while(True):
+        time.sleep(86400)
+        get()
+        weather_messages = []
+        weather_message = ""
+        weather_messages = get_data_from_file_forecast(weekday_today)
+        for item in weather_messages[2]:
+            weather_message = weather_message + "\n" + item
+        bot.send_message(message.chat.id,weather_message)
+#main
+
 
 today = datetime.datetime.today()
 now = datetime.datetime.now()
@@ -97,15 +188,18 @@ days= ["Понедельник","Вторник","Среда","Четверг","
 get()
 get_data_from_file_forecast(weekday_today)
 weather_message,location = get_data_from_file_cur()
-bot = bot_api.create_bot()
 
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
-keyboard1.row('Погода сейчас', 'Погода сегодня','Прогноз погоды')
+keyboard1.row('Погода сейчас', 'Погода сегодня','Погода завтра','Прогноз погоды')
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}', reply_markup=keyboard1)
-
+    th1 = Thread(target=sending_morning_mes, name="Thread0",args = (bot,message), daemon = True)
+    th2 = Thread(target=sending_evening_mes, name="Thread1",args = (bot,message), daemon = True)
+    th1.start()
+    th2.start()
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     today = datetime.datetime.today()
@@ -134,6 +228,14 @@ def send_text(message):
         weather_message = ""
         weather_messages = get_data_from_file_forecast(weekday_today)
         for item in weather_messages[1]:
+            weather_message = weather_message + "\n" + item
+        bot.send_message(message.chat.id,weather_message)
+
+    if message.text == 'Погода завтра':
+        weather_messages = []
+        weather_message = ""
+        weather_messages = get_data_from_file_forecast(weekday_today)
+        for item in weather_messages[2]:
             weather_message = weather_message + "\n" + item
         bot.send_message(message.chat.id,weather_message)
 
