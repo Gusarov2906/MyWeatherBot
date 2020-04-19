@@ -5,10 +5,18 @@ import json
 import bot_api
 import time
 import telebot
+import datetime
 from GetterAPI.get_api import get
 
 CHANNEL_NAME = '@gusarov2906_channel'
-def get_data_from_file():
+
+def fix_wd(i):
+    if (i==7):
+        i=0
+    #print(f"ok, ret {i}")
+    return i
+
+def get_data_from_file_cur():
     try:
         with open("data_cur_weather.json",'r',encoding='utf-8') as file:
                 f = json.load(file)
@@ -23,30 +31,72 @@ def get_data_from_file():
                 pressure = f['main']['pressure']
                 humidity = f['main']['humidity']
                 location = f['name']
-                if (weather_status == "Clouds"):
-                    weather_status = "Облачно"
-                weather_message = f"Статус погоды: {weather_status} \nТекущая температура: {cur_temp} ℃ \nМаксимальная температура: {cur_temp_max} ℃ \nМинимальная температура: {cur_temp_min} ℃ \nОщущается как: {feels_like} ℃"
-        return weather_message
+
+                weather_message = f"\n Описание: {weather_description} \n Текущая температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %"
+        return weather_message,location
     except Exception as e:
         print("Exception: ", e)
         pass
 
-with open("data_cur_weather.json",'r',encoding='utf-8') as file:
-        f = json.load(file)
+def get_data_from_file_forecast(weekday_today):
+    try:
+        with open("data_forecast.json",'r',encoding='utf-8') as file:
+            f = json.load(file)
+            weather_message = []
+            weather_message_forecast=[]
+            weather_message_today=[]
 
-        weather_status = f['weather'][0]['main']
-        weather_description = f['weather'][0]['description']
+            last_date = ""
+            i = 0
+            new_weekday = weekday_today
+            for item in f['list']:
+                #print(f"\n{item}\n")
+                date = item['dt_txt']
+                weather_description = item['weather'][0]['description']
+                cur_temp = item['main']['temp']
 
-        cur_temp = f['main']['temp']
-        cur_temp_min = f['main']['temp_min']
-        cur_temp_max = f['main']['temp_max']
-        feels_like = f['main']['feels_like']
-        pressure = f['main']['pressure']
-        humidity = f['main']['humidity']
-        location = f['name']
-        if (weather_status == "Clouds"):
-            weather_status = "Облачно"
-        weather_message = f"Статус погоды: {weather_status} \nТекущая температура: {cur_temp} ℃ \nМаксимальная температура: {cur_temp_max} ℃ \nМинимальная температура: {cur_temp_min} ℃ \nОщущается как: {feels_like} ℃"
+                if ("9:" in date)or("15:" in date)or("21:" in date)or("3:"in date):
+                    if (last_date[0:10]!=date[0:10]):
+                        new_weekday = fix_wd(new_weekday+i)
+                        weather_message_forecast.append(f"\nПрогноз на {days[new_weekday]} ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃")
+                        i=1
+                    else:
+                        weather_message_forecast.append(f"Время: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃")
+                    last_date = date
+            i = 0
+            for item in f['list']:
+                date = item['dt_txt']
+                weather_description = item['weather'][0]['description']
+                cur_temp = item['main']['temp']
+                cur_temp_min = item['main']['temp_min']
+                cur_temp_max = item['main']['temp_max']
+                feels_like = item['main']['feels_like']
+                pressure = item['main']['pressure']
+                humidity = item['main']['humidity']
+
+                if (datetime.datetime.today().strftime("%d")==date[8:10]):
+                    if (i==0):
+                        weather_message_today.append(f"\nПрогноз на сегодня ({date[0:10]})\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+                        i=1
+                    else:
+                        weather_message_today.append(f"\nВремя: {date[11:16]}\n Описание: {weather_description} \n Температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %")
+
+            weather_message.append(weather_message_forecast)
+            weather_message.append(weather_message_today)
+            return weather_message
+
+    except Exception as e:
+        print("Exception: ", e)
+        pass
+
+today = datetime.datetime.today()
+now = datetime.datetime.now()
+weekday_today = datetime.date.weekday(today)
+days= ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"]
+
+get()
+get_data_from_file_forecast(weekday_today)
+weather_message,location = get_data_from_file_cur()
 bot = bot_api.create_bot()
 
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
@@ -54,15 +104,39 @@ keyboard1.row('Погода сейчас', 'Погода сегодня','Про
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-
     bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}', reply_markup=keyboard1)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
+    today = datetime.datetime.today()
+    now = datetime.datetime.now()
+    weekday_today = datetime.date.weekday(today)
+    get()
+
     if message.text == 'Погода сейчас':
-        get()
-        weather_message = get_data_from_file()
+        weather_message =f'Сейчас: {now.strftime("%x")} {now.strftime("%X")}'
+        tmp,location = get_data_from_file_cur()
+        weather_message += tmp
         bot.send_message(message.chat.id,weather_message)
+
+    if message.text == 'Прогноз погоды':
+        weather_messages = []
+        weather_message = ""
+        weather_messages = get_data_from_file_forecast(weekday_today)
+        last_item = weather_messages[0][0]
+        for item in weather_messages[0]:
+            weather_message = weather_message + "\n" + item
+            last_item = item
+        bot.send_message(message.chat.id,weather_message)
+
+    if message.text == 'Погода сегодня':
+        weather_messages = []
+        weather_message = ""
+        weather_messages = get_data_from_file_forecast(weekday_today)
+        for item in weather_messages[1]:
+            weather_message = weather_message + "\n" + item
+        bot.send_message(message.chat.id,weather_message)
+
 
 bot.polling()
 
