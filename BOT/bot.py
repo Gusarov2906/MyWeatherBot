@@ -126,9 +126,9 @@ def sending_morning_mes(bot,message):
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
         day = int(tomorrow.strftime("%d"))
     t_time = datetime.datetime(year,month,day,9,0)
-    #print(t_time)
-    #print(now)
-    #print((t_time -now).seconds)
+    print(t_time)
+    print(now)
+    print((t_time -now).seconds)
     time.sleep((t_time -now).seconds)
     get()
     weather_messages = []
@@ -158,9 +158,9 @@ def sending_evening_mes(bot,message):
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
         day = int(tomorrow.strftime("%d"))
     t_time = datetime.datetime(year,month,day,21,00)
-    #print(t_time)
-    #print(now)
-    #print((t_time -now).seconds)
+    print(t_time)
+    print(now)
+    print((t_time -now).seconds)
     time.sleep((t_time -now).seconds)
     get()
     weather_message = "Добрый вечер!)"
@@ -193,13 +193,55 @@ keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
 keyboard1.row('Погода сейчас', 'Погода сегодня','Погода завтра','Прогноз погоды')
 
 
+sending_flag = True
+
+#@bot.message_handler(commands=['change_notifications'])
+#def send_text(message):
+#    print(sending_flag)
+#    if(sending_flag):
+#        th1 = Thread(target=sending_morning_mes, name="Thread0",args = (bot,message), daemon = True)
+#        th2 = Thread(target=sending_evening_mes, name="Thread1",args = (bot,message), daemon = True)
+#        th1.start()
+#        th2.start()
+#    else:
+#    print("threading not work")
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}', reply_markup=keyboard1)
-    th1 = Thread(target=sending_morning_mes, name="Thread0",args = (bot,message), daemon = True)
-    th2 = Thread(target=sending_evening_mes, name="Thread1",args = (bot,message), daemon = True)
-    th1.start()
-    th2.start()
+    bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}\n Для настроки уведолений зайдите в настройки /settings\n', reply_markup=keyboard1)
+    if(sending_flag):
+        th1 = Thread(target=sending_morning_mes, name="Thread0",args = (bot,message), daemon = True)
+        th2 = Thread(target=sending_evening_mes, name="Thread1",args = (bot,message), daemon = True)
+        th1.start()
+        th2.start()
+
+@bot.message_handler(commands=['settings'])
+def send_text(message):
+    bot.send_message(message.chat.id, f'Настройки: \n   ')
+
+#@bot.message_handler(commands=['notification'])
+#def send_text(message):
+#    markup = telebot.types.InlineKeyboardMarkup()
+#    markup.add(telebot.types.InlineKeyboardButton(text='Включить', callback_data=1))
+#    markup.add(telebot.types.InlineKeyboardButton(text='Выключить', callback_data=2))
+#    bot.send_message(message.chat.id, text="Отправка уведомлений о погоде с утра и вечером", reply_markup=markup)
+
+#@bot.callback_query_handler(func=lambda call: True)
+#def query_handler(call,sending_flag):
+#    bot.answer_callback_query(callback_query_id=call.id, text='Изменения приняты')
+#    answer = ''
+#    if call.data == '1':
+#        answer = 'Изменения приняты+'
+#        sending_flag = True
+
+#    elif call.data == '2':
+#        answer = 'Изменения приняты-'
+#        sending_flag = False
+#
+#    bot.send_message(call.message.chat.id, answer)
+#    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
+
+
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     today = datetime.datetime.today()
