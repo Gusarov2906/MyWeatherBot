@@ -8,10 +8,15 @@ import telebot
 import datetime
 from GetterAPI.get_api import get
 from threading import Thread
+import pytz
+
 
 CHANNEL_NAME = '@gusarov2906_channel'
+tzname_msc ='Europe/Moscow'
+tzmoscow = pytz.timezone(tzname_msc)
 
 bot = bot_api.create_bot()
+
 
 def fix_wd(i):
     if (i==7):
@@ -21,7 +26,7 @@ def fix_wd(i):
 
 def get_data_from_file_cur():
     try:
-        with open("data_cur_weather.json",'r',encoding='utf-8') as file:
+        with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_cur_weather.json",'r',encoding='utf-8') as file:
                 f = json.load(file)
 
                 weather_status = f['weather'][0]['main']
@@ -43,7 +48,7 @@ def get_data_from_file_cur():
 
 def get_data_from_file_forecast(weekday_today):
     try:
-        with open("data_forecast.json",'r',encoding='utf-8') as file:
+        with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_forecast.json",'r',encoding='utf-8') as file:
             f = json.load(file)
             weather_message = []
             weather_message_forecast=[]
@@ -116,18 +121,20 @@ def get_data_from_file_forecast(weekday_today):
         pass
 
 def sending_morning_mes(bot,message):
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tzmoscow)
     year = int(now.strftime("%Y"))
     month = int(now.strftime("%m"))
     day = int(now.strftime("%d"))
     hours = int(now.strftime("%H"))
     minutes = int(now.strftime("%M"))
     if (hours >= 9):
-        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        tomorrow = datetime.date.today()+ datetime.timedelta(seconds=10800) + datetime.timedelta(days=1)
         day = int(tomorrow.strftime("%d"))
-    t_time = datetime.datetime(year,month,day,9,0)
+    t_time = datetime.datetime(year,month,day,9,0,0,tzinfo=tzmoscow)
     print(t_time)
+    print(type(t_time))
     print(now)
+    print(now.strftime("%H"))
     print((t_time -now).seconds)
     time.sleep((t_time -now).seconds)
     get()
@@ -148,16 +155,16 @@ def sending_morning_mes(bot,message):
         bot.send_message(message.chat.id,weather_message)
 
 def sending_evening_mes(bot,message):
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tzmoscow)
     year = int(now.strftime("%Y"))
     month = int(now.strftime("%m"))
     day = int(now.strftime("%d"))
     hours = int(now.strftime("%H"))
     minutes = int(now.strftime("%M"))
     if (hours >= 21):
-        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        tomorrow = datetime.date.today()+ datetime.timedelta(seconds=10800) + datetime.timedelta(days=1)
         day = int(tomorrow.strftime("%d"))
-    t_time = datetime.datetime(year,month,day,21,00)
+    t_time = datetime.datetime(year,month,day,21,0,0,tzinfo=tzmoscow)
     print(t_time)
     print(now)
     print((t_time -now).seconds)
@@ -180,8 +187,9 @@ def sending_evening_mes(bot,message):
 #main
 
 
-today = datetime.datetime.today()
-now = datetime.datetime.now()
+today = datetime.datetime.today() + datetime.timedelta(seconds=10800)
+print(f"TD:{today}")
+now = datetime.datetime.now(tzmoscow)
 weekday_today = datetime.date.weekday(today)
 days= ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"]
 
@@ -217,7 +225,7 @@ def start_message(message):
 
 @bot.message_handler(commands=['settings'])
 def send_text(message):
-    bot.send_message(message.chat.id, f'Настройки: \n   ')
+    bot.send_message(message.chat.id, f'Настройки: \n Пока здесь пусто ')
 
 #@bot.message_handler(commands=['notification'])
 #def send_text(message):
@@ -244,8 +252,8 @@ def send_text(message):
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
-    today = datetime.datetime.today()
-    now = datetime.datetime.now()
+    today = datetime.datetime.today()+ datetime.timedelta(seconds=10800)
+    now = datetime.datetime.now(tzmoscow)
     weekday_today = datetime.date.weekday(today)
     get()
 
