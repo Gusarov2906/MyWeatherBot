@@ -7,6 +7,7 @@ import bot_api
 import time
 import telebot
 import datetime
+import threading
 from GetterAPI.get_api import get
 from threading import Thread
 
@@ -19,13 +20,13 @@ def fix_wd(i):
     if (i==7):
         i=0
     return i
-
+flag_to_end = False
 #function to get data from files in current directory
 def get_from_file(file_name):
     #gets date for current weather message
     if (file_name=="now"):
         try:
-            with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_cur_weather.json",'r',encoding='utf-8') as file:
+            with open("data_cur_weather.json",'r',encoding='utf-8') as file:
                     f = json.load(file)
 
                     weather_status = f['weather'][0]['main']
@@ -42,16 +43,18 @@ def get_from_file(file_name):
             return weather_message
         except Exception as e:
             print("Exception: ", e)
+            with open("error.txt",'w',encoding='utf-8') as file:
+                file.write(str(e))
             pass
 
     #gets data for 5 days forecast weather and return message
     elif (file_name=="week_forecast"):
         try:
-            with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_forecast.json",'r',encoding='utf-8') as file:
+            with open("data_forecast.json",'r',encoding='utf-8') as file:
                 f = json.load(file)
                 weather_message_forecast=[]
-                #+ datetime.timedelta(seconds=10800) because on location where will live bot not local time
-                today = datetime.datetime.today()+ datetime.timedelta(seconds=10800)
+                #+  because on location where will live bot not local time
+                today = datetime.datetime.today()
                 weekday_today = datetime.date.weekday(today)
                 last_date = ""
                 i = 0
@@ -73,12 +76,14 @@ def get_from_file(file_name):
                 return weather_message_forecast
         except Exception as e:
                 print("Exception: ", e)
+                with open("error.txt",'w',encoding='utf-8') as file:
+                    file.write(str(e))
                 pass
 
     #gets data tomorrow forecast weather and return message
     elif (file_name=="tomorrow_forecast"):
         try:
-            with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_forecast.json",'r',encoding='utf-8') as file:
+            with open("data_forecast.json",'r',encoding='utf-8') as file:
                 f = json.load(file)
                 weather_message_tomorrow=[]
                 isFirst = True
@@ -103,12 +108,14 @@ def get_from_file(file_name):
                 return weather_message_tomorrow
         except Exception as e:
             print("Exception: ", e)
+            with open("error.txt",'w',encoding='utf-8') as file:
+                file.write(str(e))
             pass
 
     #gets data today forecast weather and return message
     elif (file_name=="today_forecast"):
         try:
-            with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_forecast.json",'r',encoding='utf-8') as file:
+            with open("data_forecast.json",'r',encoding='utf-8') as file:
                 f = json.load(file)
                 weather_message_today=[]
                 isFirst = True
@@ -133,73 +140,90 @@ def get_from_file(file_name):
                 return weather_message_today
         except Exception as e:
             print("Exception: ", e)
+            with open("error.txt",'w',encoding='utf-8') as file:
+                file.write(str(e))
             pass
     #gets location and return it
     elif (file_name=="location"):
             try:
-                with open("\HOME\Gusarov2906\MyWeatherBot\BOT\data_cur_weather.json",'r',encoding='utf-8') as file:
+                with open("data_cur_weather.json",'r',encoding='utf-8') as file:
                         f = json.load(file)
                         location = f['name']
                 return location
             except Exception as e:
                 print("Exception: ", e)
+                with open("error.txt",'w',encoding='utf-8') as file:
+                    file.write(str(e))
                 pass
 
 #function to send message with todays forecast weather every morning
 def sending_morning_mes(bot,message):
-    now = datetime.datetime.now()+ datetime.timedelta(seconds=10800)
-    #check if message need to send tommorow
-    hours = int(now.strftime("%H"))
-    if (hours >= 9):
-        tomorrow = datetime.date.today()+ datetime.timedelta(seconds=10800) + datetime.timedelta(days=1)
-        day = int(tomorrow.strftime("%d"))
-    else:
-        day = int(now.strftime("%d"))
-    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,9,0,0,)
-    #some debug features
-    print(f"Morning notification\n Time of Notification: {t_time}")
-    print(f" Now: {now}")
-    print(f" Time lest: {(t_time -now).seconds} \n")
-    time.sleep((t_time -now).seconds)
-    while(True):
-        get()
-        weather_message = "Доброе утро!)"
-        weather_messages = get_from_file("today_forecast")
-        for item in weather_messages:
-            weather_message = weather_message + "\n" + item
-        bot.send_message(message.chat.id,weather_message)
-        time.sleep(86400)
-
+    if (not flag_to_end):
+        now = datetime.datetime.now()
+        #check if message need to send tommorow
+        hours = int(now.strftime("%H"))
+        if (hours >= 9):
+            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+            day = int(tomorrow.strftime("%d"))
+        else:
+            day = int(now.strftime("%d"))
+        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,9,0,0,)
+        #some debug features
+        print(f"\nMorning notification\n Time of Notification: {t_time}")
+        print(f" Now: {now}")
+        print(f" Time left: {(t_time -now).seconds}")
+        time.sleep((t_time -now).seconds)
+        while(True):
+            if (not flag_to_end):
+                get()
+                weather_message = "Доброе утро!)"
+                weather_messages = get_from_file("today_forecast")
+                for item in weather_messages:
+                    weather_message = weather_message + "\n" + item
+                bot.send_message(message.chat.id,weather_message)
+                time.sleep(86400)
+            else:
+                break
+        else:
+            print("stopped")
 #function to send message with tomorrow forecast weather every evening
 def sending_evening_mes(bot,message):
-    now = datetime.datetime.now()+ datetime.timedelta(seconds=10800)
-    #check if message need to send tomorrow
-    hours = int(now.strftime("%H"))
-    if (hours >= 21):
-        tomorrow = datetime.date.today()+ datetime.timedelta(seconds=10800) + datetime.timedelta(days=1)
-        day = int(tomorrow.strftime("%d"))
+    if (not flag_to_end):
+        now = datetime.datetime.now()
+        #check if message need to send tomorrow
+        hours = int(now.strftime("%H"))
+        if (hours >= 21):
+            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+            day = int(tomorrow.strftime("%d"))
+        else:
+            day = int(now.strftime("%d"))
+        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
+        #some debug features
+        print(f"\nEvening notification\n Time of Notification: {t_time}")
+        print(f" Now: {now}")
+        print(f" Time left: {(t_time -now).seconds}")
+        time.sleep((t_time -now).seconds)
+        while(True):
+            if (not flag_to_end):
+                get()
+                weather_message = "Добрый вечер!)"
+                weather_messages = get_from_file("tomorrow_forecast")
+                for item in weather_messages:
+                    weather_message = weather_message + "\n" + item
+                bot.send_message(message.chat.id,weather_message)
+                time.sleep(86400)
+            else:
+                break
     else:
-        day = int(now.strftime("%d"))
-    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
-    #some debug features
-    print(f"Evening notification\n Time of Notification: {t_time}")
-    print(f" Now: {now}")
-    print(f" Time lest: {(t_time -now).seconds} \n")
-    time.sleep((t_time -now).seconds)
-    while(True):
-        get()
-        weather_message = "Добрый вечер!)"
-        weather_messages = get_from_file("tomorrow_forecast")
-        for item in weather_messages:
-            weather_message = weather_message + "\n" + item
-        bot.send_message(message.chat.id,weather_message)
-        time.sleep(86400)
+        print("stopped")
+
+
 
 #MAIN
 def main():
     #start time
-    today = datetime.datetime.today() + datetime.timedelta(seconds=10800)
-    now = datetime.datetime.now()+ datetime.timedelta(seconds=10800)
+    today = datetime.datetime.today()
+    now = datetime.datetime.now()
     weekday_today = datetime.date.weekday(today)
 
 
@@ -218,28 +242,43 @@ def main():
     @bot.message_handler(commands=['start'])
     def start_message(message):
         location = get_from_file("location")
-        bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}\n Для настроки уведолений зайдите в настройки /settings\n', reply_markup=keyboard1)
+        bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}\nДля настроки уведолений зайдите в настройки /settings\nДля того чтобы зайти в меню помощи работает команда /help\n', reply_markup=keyboard1)
+
+    @bot.message_handler(commands=['help'])
+    def start_message(message):
+        bot.send_message(message.chat.id, f'Помощь(доступные команды):\n/help\n/start\n/settings\n/start_notification\n/stop_notification\nПо техническим вопросам обращаться на:\ngusarov2906@gmail.com\n', reply_markup=keyboard1)
 
     #bot settings menu
     @bot.message_handler(commands=['settings'])
-    def send_text(message):
-        bot.send_message(message.chat.id, f'Настройки: \n')
+    def start_message(message):
+        bot.send_message(message.chat.id, f'Настройки: \n /start_notification - вкл рассылку с утра и вечером\n /stop_notification - выкл рассылку с утра и вечером')
 
     #start notifications for all users
-    @bot.message_handler(commands=['start_notification'])
+    @bot.message_handler(commands=['start_notification','stop_notification'])
     def send_text(message):
-        bot.send_message(message.chat.id,f'Уведомления для всех пользователей включенны\n')
-        th1 = Thread(target=sending_morning_mes, name="Thread0",args = (bot,message), daemon = True)
-        th2 = Thread(target=sending_evening_mes, name="Thread1",args = (bot,message), daemon = True)
-        th1.start()
-        th2.start()
+        global flag_to_end
+        if (message.text=='/start_notification'):
+            print("\nEnable notifications")
+            th1 =Thread(target=sending_morning_mes, name="Thread1",args = (bot,message), daemon = True)
+            th2 =Thread(target=sending_evening_mes, name="Thread2",args = (bot,message), daemon = True)
+            flag_to_end = False
+            bot.send_message(message.chat.id,f'\nУведомления включенны')
+            th1.start()
+            time.sleep(1)
+            th2.start()
+            print(f'\nNum of active threads: {threading.activeCount()}')
+        elif(message.text=='/stop_notification'):
+            flag_to_end = True
+            print("\nDissable notifications")
+            bot.send_message(message.chat.id,f'\nУведомления выключенны')
 
     #menu from keyboard
     @bot.message_handler(content_types=['text'])
     def send_text(message):
-        today = datetime.datetime.today()+ datetime.timedelta(seconds=10800)
-        now = datetime.datetime.now()+ datetime.timedelta(seconds=10800)
+        today = datetime.datetime.today()
+        now = datetime.datetime.now()
         weekday_today = datetime.date.weekday(today)
+        print(f"\nGot message: {message.text} Time: {now}")
         get()
 
         if message.text == 'Погода сейчас':
@@ -274,7 +313,15 @@ def main():
                 weather_message = weather_message + "\n" + item
             bot.send_message(message.chat.id,weather_message)
 
-    bot.polling()
+    while True:
+        try:
+            bot.polling(none_stop=True)
+
+        except Exception as e:
+            print("Exception: ", e)
+            with open("error.txt",'w',encoding='utf-8') as file:
+                file.write(str(e))
+                time.sleep(5)
 
 
 if __name__ == "__main__":
