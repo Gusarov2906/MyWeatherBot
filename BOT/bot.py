@@ -173,7 +173,7 @@ def sending_morning_mes(bot):
         day = int(tomorrow.strftime("%d"))
     else:
         day = int(now.strftime("%d"))
-    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,13,3,0,)
+    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,9,0,0,)
 
     #some debug features
     print(f"\nMorning notification\n Time of Notification: {t_time}")
@@ -416,15 +416,15 @@ def main():
                 weather_message = weather_message + "\n" + item
             bot.send_message(message.chat.id,weather_message)
         """
-    #while True:
-    try:
-        bot.polling(none_stop=True)
+    while True:
+        try:
+            bot.polling(none_stop=True)
 
-    except Exception as e:
-        print("Exception: ", e)
-        with open("error.txt",'w',encoding='utf-8') as file:
-            file.write(str(e))
-            time.sleep(5)
+        except Exception as e:
+            print("Exception: ", e)
+            with open("error.txt",'w',encoding='utf-8') as file:
+                file.write(str(e))
+                time.sleep(5)
 
 
 if __name__ == "__main__":
