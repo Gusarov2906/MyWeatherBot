@@ -6,6 +6,7 @@ import json
 import bot_api
 import time
 import telebot
+from telebot import types
 import datetime
 import threading
 from GetterAPI.get_api import get_current_weather
@@ -264,14 +265,15 @@ def main():
     th1.start()
     time.sleep(1)
     th2.start()
-
+    time.sleep(1)
+    print(f'\nNum of active threads: {threading.activeCount()}')
 
     #get location
     location = get_from_file("location")
 
     #settings for keyboard
     keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
-    keyboard1.row('Погода сейчас', 'Погода сегодня','Погода завтра','Прогноз погоды')
+    keyboard1.row('Погода сейчас','Прогноз погоды','Помощь')
 
     #bot.send_message(chat_id,chat_id)
 
@@ -331,7 +333,7 @@ def main():
         today = datetime.datetime.today()
         now = datetime.datetime.now()
         weekday_today = datetime.date.weekday(today)
-        print(f"\nGot message: {message.text} Time: {now}")
+        print(f"Got message: {message.text} ID: {message.chat.id} Time: {now}")
 
 
         if message.text == 'Погода сейчас':
@@ -342,6 +344,53 @@ def main():
             bot.send_message(message.chat.id,weather_message)
 
         if message.text == 'Прогноз погоды':
+
+            inline_keyboard_1 = types.InlineKeyboardMarkup(row_width = 3)
+            item1 = types.InlineKeyboardButton("Сегодня", callback_data = "today")
+            item2 = types.InlineKeyboardButton("Завтра", callback_data = "tommorow")
+            item3 = types.InlineKeyboardButton("На 5 дней", callback_data = "week_forecast")
+            inline_keyboard_1.add(item1,item2,item3)
+            bot.send_message(message.chat.id,"На какой день вы хотите прогноз?",parse_mode='html', reply_markup=inline_keyboard_1)
+
+        if message.text == 'Помощь':
+            bot.send_message(message.chat.id, f'Помощь(доступные команды):\n/help\n/start\n/settings\n/start_notification\n/stop_notification\nПо техническим вопросам обращаться на:\ngusarov2906@gmail.com\n', reply_markup=keyboard1)
+
+    @bot.callback_query_handler(func = lambda call:True)
+    def callback_inline(call):
+        try:
+            if call.message:
+                print(f"Got message: {call.data} ID:{call.message.chat.id} Time: {now}")
+                if call.data == "today":
+                    weather_messages = []
+                    weather_message = ""
+                    weather_messages = get_from_file("today_forecast")
+                    for item in weather_messages:
+                        weather_message = weather_message + "\n" + item
+                    bot.send_message(call.message.chat.id,weather_message)
+                elif call.data == "tommorow":
+                    weather_messages = []
+                    weather_message = ""
+                    weather_messages = get_from_file("tomorrow_forecast")
+                    for item in weather_messages:
+                        weather_message = weather_message + "\n" + item
+                    bot.send_message(call.message.chat.id,weather_message)
+                elif call.data == "week_forecast":
+                    weather_messages = []
+                    weather_message = ""
+                    weather_messages = get_from_file("week_forecast")
+                    last_item = weather_messages[0]
+                    for item in weather_messages:
+                        weather_message = weather_message + "\n" + item
+                        last_item = item
+                    bot.send_message(call.message.chat.id,weather_message)
+
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="На какой день вы хотите прогноз?",
+                reply_markup=None)
+
+        except Exception as e:
+                with open("error.txt",'w',encoding='utf-8') as file:
+                    file.write(str(e))
+        """
             weather_messages = []
             weather_message = ""
             weather_messages = get_from_file("week_forecast")
@@ -366,7 +415,7 @@ def main():
             for item in weather_messages:
                 weather_message = weather_message + "\n" + item
             bot.send_message(message.chat.id,weather_message)
-
+        """
     #while True:
     try:
         bot.polling(none_stop=True)
