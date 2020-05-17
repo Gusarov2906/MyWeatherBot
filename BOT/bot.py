@@ -8,8 +8,12 @@ import time
 import telebot
 import datetime
 import threading
-from GetterAPI.get_api import get
+from GetterAPI.get_api import get_current_weather
+from GetterAPI.get_api import get_forecast_weather
 from threading import Thread
+import sqlite3
+
+
 
 #CONSTANTS
 days= ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"]
@@ -157,93 +161,139 @@ def get_from_file(file_name):
                 pass
 
 #function to send message with todays forecast weather every morning
-def sending_morning_mes(bot,message):
-    if (not flag_to_end):
-        now = datetime.datetime.now()
-        #check if message need to send tommorow
-        hours = int(now.strftime("%H"))
-        if (hours >= 9):
-            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
-            day = int(tomorrow.strftime("%d"))
-        else:
-            day = int(now.strftime("%d"))
-        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,9,0,0,)
-        #some debug features
-        print(f"\nMorning notification\n Time of Notification: {t_time}")
-        print(f" Now: {now}")
-        print(f" Time left: {(t_time -now).seconds}")
-        time.sleep((t_time -now).seconds)
-        while(True):
-            if (not flag_to_end):
-                get()
-                weather_message = "Доброе утро!)"
-                weather_messages = get_from_file("today_forecast")
-                for item in weather_messages:
-                    weather_message = weather_message + "\n" + item
-                bot.send_message(message.chat.id,weather_message)
-                time.sleep(86400)
-            else:
-                break
-        else:
-            print("stopped")
-#function to send message with tomorrow forecast weather every evening
-def sending_evening_mes(bot,message):
-    if (not flag_to_end):
-        now = datetime.datetime.now()
-        #check if message need to send tomorrow
-        hours = int(now.strftime("%H"))
-        if (hours >= 21):
-            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
-            day = int(tomorrow.strftime("%d"))
-        else:
-            day = int(now.strftime("%d"))
-        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
-        #some debug features
-        print(f"\nEvening notification\n Time of Notification: {t_time}")
-        print(f" Now: {now}")
-        print(f" Time left: {(t_time -now).seconds}")
-        time.sleep((t_time -now).seconds)
-        while(True):
-            if (not flag_to_end):
-                get()
-                weather_message = "Добрый вечер!)"
-                weather_messages = get_from_file("tomorrow_forecast")
-                for item in weather_messages:
-                    weather_message = weather_message + "\n" + item
-                bot.send_message(message.chat.id,weather_message)
-                time.sleep(86400)
-            else:
-                break
+def sending_morning_mes(bot):
+    get_forecast_weather()
+    notif_users = []
+    now = datetime.datetime.now()
+    #check if message need to send tommorow
+    hours = int(now.strftime("%H"))
+    if (hours >= 9):
+        tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+        day = int(tomorrow.strftime("%d"))
+    else:
+        day = int(now.strftime("%d"))
+    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,13,3,0,)
+
+    #some debug features
+    print(f"\nMorning notification\n Time of Notification: {t_time}")
+    print(f" Now: {now}")
+    print(f" Time left: {(t_time -now).seconds}\n")
+
+    time.sleep((t_time -now).seconds)
+
+    #messaging
+    while(True):
+        get_forecast_weather()
+        weather_message = "Доброе утро!)"
+        weather_messages = get_from_file("today_forecast")
+        for item in weather_messages:
+            weather_message = weather_message + "\n" + item
+
+        #get list of 'true' users
+        with sqlite3.connect('users.sqlite') as conn:
+            cur = conn.cursor()
+            cur.execute("""SELECT *FROM Users WHERE notif = 1""")
+            notif_users = cur.fetchall()
+
+        #send them message
+        for user in notif_users:
+            #user[0] is id
+            bot.send_message(user[0],weather_message)
+            print(f"Morning notification for {user[3]}\n")
+        time.sleep(86400)
     else:
         print("stopped")
 
+#function to send message with tomorrow forecast weather every evening
+def sending_evening_mes(bot):
+    get_forecast_weather()
+    notif_users = []
+    now = datetime.datetime.now()
+    #check if message need to send tomorrow
+    hours = int(now.strftime("%H"))
+    if (hours >= 21):
+        tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+        day = int(tomorrow.strftime("%d"))
+    else:
+        day = int(now.strftime("%d"))
+    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
+    #some debug features
+    print(f"\nEvening notification\n Time of Notification: {t_time}")
+    print(f" Now: {now}")
+    print(f" Time left: {(t_time -now).seconds}\n")
+    time.sleep((t_time -now).seconds)
+    while(True):
+        get_forecast_weather()
+        weather_message = "Добрый вечер!)"
+        weather_messages = get_from_file("tomorrow_forecast")
+        for item in weather_messages:
+            weather_message = weather_message + "\n" + item
 
+        #get list of 'true' users
+        with sqlite3.connect('users.sqlite') as conn:
+            cur = conn.cursor()
+            cur.execute("""SELECT *FROM Users WHERE notif = 1""")
+            notif_users = cur.fetchall()
 
+        #send them message
+        for user in notif_users:
+            #user[0] is id
+            bot.send_message(user[0],weather_message)
+            print(f"Evening notification for {user[3]}\n")
+        time.sleep(86400)
+    else:
+        print("stopped")
+
+#FOR TESTS end
 #MAIN
 def main():
     #start time
+    print(f'\nNum of active threads: {threading.activeCount()}')
     today = datetime.datetime.today()
     now = datetime.datetime.now()
     weekday_today = datetime.date.weekday(today)
 
-
     print(f"Prog started!\nMade by Gusarov2906\nTD :{today}\n")
-    #get location
-    location = get_from_file("location")
 
     #start bot
     bot = bot_api.create_bot()
 
+    #starts threads with notification
+    th1 =Thread(target=sending_morning_mes, name="Thread1",args = (bot,), daemon = True)
+    th2 =Thread(target=sending_evening_mes, name="Thread2",args = (bot,), daemon = True)
+    th1.start()
+    time.sleep(1)
+    th2.start()
+
+
+    #get location
+    location = get_from_file("location")
+
     #settings for keyboard
     keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
     keyboard1.row('Погода сейчас', 'Погода сегодня','Погода завтра','Прогноз погоды')
+
+    #bot.send_message(chat_id,chat_id)
 
     #starting message from bot
     @bot.message_handler(commands=['start'])
     def start_message(message):
         location = get_from_file("location")
         bot.send_message(message.chat.id, f'Привет, ты написал мне /start\nЭто бот мониторинга погоды\nВ данный момент локация погоды: {location}\nДля настроки уведолений зайдите в настройки /settings\nДля того чтобы зайти в меню помощи работает команда /help\n', reply_markup=keyboard1)
+        #saving id to database if first open
+        with sqlite3.connect('users.sqlite') as conn:
+            cur = conn.cursor()
+            chat_id = message.chat.id
+            first_name = message.from_user.first_name
+            last_name = message.from_user.last_name
+            username = message.from_user.username
+            notif =1
+            #print(chat_id,first_name,last_name,username)
+            cur.execute('''INSERT OR IGNORE INTO Users (ID_chat,username,name,surname,notif)
+                VALUES ( ?,?,?,?,? )''', ( chat_id,first_name,last_name,username,notif ) )
+            conn.commit()
 
+    #bot help menu
     @bot.message_handler(commands=['help'])
     def start_message(message):
         bot.send_message(message.chat.id, f'Помощь(доступные команды):\n/help\n/start\n/settings\n/start_notification\n/stop_notification\nПо техническим вопросам обращаться на:\ngusarov2906@gmail.com\n', reply_markup=keyboard1)
@@ -253,24 +303,27 @@ def main():
     def start_message(message):
         bot.send_message(message.chat.id, f'Настройки: \n /start_notification - вкл рассылку с утра и вечером\n /stop_notification - выкл рассылку с утра и вечером')
 
+
     #start notifications for all users
     @bot.message_handler(commands=['start_notification','stop_notification'])
     def send_text(message):
-        global flag_to_end
-        if (message.text=='/start_notification'):
-            print("\nEnable notifications")
-            th1 =Thread(target=sending_morning_mes, name="Thread1",args = (bot,message), daemon = True)
-            th2 =Thread(target=sending_evening_mes, name="Thread2",args = (bot,message), daemon = True)
-            flag_to_end = False
-            bot.send_message(message.chat.id,f'\nУведомления включенны')
-            th1.start()
-            time.sleep(1)
-            th2.start()
-            print(f'\nNum of active threads: {threading.activeCount()}')
-        elif(message.text=='/stop_notification'):
-            flag_to_end = True
-            print("\nDissable notifications")
-            bot.send_message(message.chat.id,f'\nУведомления выключенны')
+        with sqlite3.connect('users.sqlite') as conn:
+            cur = conn.cursor()
+
+            if (message.text=='/start_notification'):
+                print("\nEnable notifications")
+                cur.execute("""UPDATE Users SET notif = 1
+                WHERE ID_chat = ?""", (message.chat.id,))
+                bot.send_message(message.chat.id,f'\nУведомления включенны')
+
+            elif(message.text=='/stop_notification'):
+                print("\nDissable notifications")
+                cur.execute("""UPDATE Users SET notif = 0
+                WHERE ID_chat = (?)""",(message.chat.id,))
+                bot.send_message(message.chat.id,f'\nУведомления выключенны')
+
+            conn.commit()
+
 
     #menu from keyboard
     @bot.message_handler(content_types=['text'])
@@ -279,9 +332,10 @@ def main():
         now = datetime.datetime.now()
         weekday_today = datetime.date.weekday(today)
         print(f"\nGot message: {message.text} Time: {now}")
-        get()
+
 
         if message.text == 'Погода сейчас':
+            get_current_weather()
             weather_message =f'Сейчас: {now.strftime("%x")} {now.strftime("%X")}'
             tmp = get_from_file("now")
             weather_message += tmp
@@ -313,15 +367,15 @@ def main():
                 weather_message = weather_message + "\n" + item
             bot.send_message(message.chat.id,weather_message)
 
-    while True:
-        try:
-            bot.polling(none_stop=True)
+    #while True:
+    try:
+        bot.polling(none_stop=True)
 
-        except Exception as e:
-            print("Exception: ", e)
-            with open("error.txt",'w',encoding='utf-8') as file:
-                file.write(str(e))
-                time.sleep(5)
+    except Exception as e:
+        print("Exception: ", e)
+        with open("error.txt",'w',encoding='utf-8') as file:
+            file.write(str(e))
+            time.sleep(5)
 
 
 if __name__ == "__main__":
