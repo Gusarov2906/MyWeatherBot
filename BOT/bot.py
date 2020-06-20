@@ -9,13 +9,14 @@ from telebot import types
 import threading
 from threading import Thread
 import sqlite3
+import sys
 
 #import my modules
 import BotAPI
 import MessageCreator
 import WeatherAPI
 import Notificator
-
+import GraphCreator
 
 #MAIN
 def main():
@@ -26,17 +27,26 @@ def main():
 
     print(f'''\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
     Prog started!\nMade by Gusarov2906\nTD :{today}\n\n''')
-    print(f'Num of active threads: {threading.activeCount()}')
+    print(f'Num of active threads and procceses: {threading.activeCount()}')
 
     #start bot
     bot = BotAPI.create_bot()
 
     #starts threads with notification
-    th1 =Thread(target=Notificator.sending_morning_mes, name="Thread1",args = (bot,), daemon = True)
-    th2 =Thread(target=Notificator.sending_evening_mes, name="Thread2",args = (bot,), daemon = True)
+
+    th1 =Thread(target=Notificator.sending_morning_mes, name="Thread1",args = (bot,))
+    th2 =Thread(target=Notificator.sending_evening_mes, name="Thread2",args = (bot,))
+    th3 =Thread(target=GraphCreator.write_cur_day_weather_to_db, name="Thread3")
+    th4 =Thread(target=GraphCreator.write_cur_night_weather_to_db, name="Thread4")
+
+
     th1.start()
     time.sleep(2)
     th2.start()
+    time.sleep(2)
+    th3.start()
+    time.sleep(2)
+    th4.start()
     time.sleep(2)
     print(f'Num of active threads: {threading.activeCount()}\n\n')
 
@@ -170,19 +180,23 @@ def main():
                 reply_markup=None)
                 print()
         except Exception as e:
-                with open("error.txt",'w',encoding='utf-8') as file:
-                    file.write(str(e))
+                with open("error.txt",'a',encoding='utf-8') as file:
+                    file.write("!Exception: "+str(e))
 
     #bot pulling cycle
-    #while True:
-    try:
-        bot.polling(none_stop=True)
+    while True:
+        try:
+            bot.infinity_polling(True)
+        except KeyboardInterrupt:
+                print ('Interrupted')
+                sys.exit(0)
+        except Exception as e:
+            print("!Exception: ", e)
+            with open("error.txt",'a',encoding='utf-8') as file:
+                file.write("!Exception: "+str(e))
+                time.sleep(20)
 
-    except Exception as e:
-        print("!Exception: ", e)
-        with open("error.txt",'w',encoding='utf-8') as file:
-            file.write(str(e))
-            time.sleep(5)
+
 
 #start main
 if __name__ == "__main__":

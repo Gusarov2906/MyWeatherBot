@@ -23,6 +23,8 @@ def get_current_weather():
             print("Upload to file was successful!")
     except Exception as e:
         print("!!!Exception: ", e)
+        with open("error.txt",'a',encoding='utf-8') as file:
+                    file.write("!!!Exception: "+str(e))
         pass
 
 def get_forecast_weather():
@@ -37,6 +39,8 @@ def get_forecast_weather():
 
     except Exception as e:
         print("!!!Exception: ", e)
+        with open("error.txt",'a',encoding='utf-8') as file:
+                    file.write("!!!Exception: "+str(e))
         pass
 
 if __name__ == '__main__':

@@ -29,12 +29,12 @@ def get_data(text):
                     humidity = f['main']['humidity']
                     location = f['name']
 
-                    weather_message = f"\n Описание: {weather_description} \n Текущая температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {humidity} hPa\n Влажность: {humidity} %"
+                    weather_message = f"\n Описание: {weather_description} \n Текущая температура: {cur_temp} ℃ \n Максимальная температура: {cur_temp_max} ℃ \n Минимальная температура: {cur_temp_min} ℃ \n Ощущается как: {feels_like} ℃\n Давление: {pressure} hPa\n Влажность: {humidity} %"
             return weather_message
         except Exception as e:
             print("!!Exception: ", e)
-            with open("error.txt",'w',encoding='utf-8') as file:
-                file.write(str(e))
+            with open("error.txt",'a',encoding='utf-8') as file:
+                file.write("!!Exception: "+str(e))
             pass
 
     #gets data for 5 days forecast weather and return message
@@ -66,8 +66,8 @@ def get_data(text):
                 return weather_message_forecast
         except Exception as e:
                 print("!!Exception: ", e)
-                with open("error.txt",'w',encoding='utf-8') as file:
-                    file.write(str(e))
+                with open("error.txt",'a',encoding='utf-8') as file:
+                    file.write("!!Exception: "+str(e))
                 pass
 
     #gets data tomorrow forecast weather and return message
@@ -98,8 +98,8 @@ def get_data(text):
                 return weather_message_tomorrow
         except Exception as e:
             print("!!Exception: ", e)
-            with open("error.txt",'w',encoding='utf-8') as file:
-                file.write(str(e))
+            with open("error.txt",'a',encoding='utf-8') as file:
+                file.write("!!Exception: "+str(e))
             pass
 
     #gets data today forecast weather and return message
@@ -130,8 +130,8 @@ def get_data(text):
                 return weather_message_today
         except Exception as e:
             print("!!Exception: ", e)
-            with open("error.txt",'w',encoding='utf-8') as file:
-                file.write(str(e))
+            with open("error.txt",'a',encoding='utf-8') as file:
+                file.write("!!Exception: "+str(e))
             pass
     #gets location and return it
     elif (text=="location"):
@@ -142,9 +142,24 @@ def get_data(text):
                 return location
             except Exception as e:
                 print("!!Exception: ", e)
-                with open("error.txt",'w',encoding='utf-8') as file:
-                    file.write(str(e))
+                with open("error.txt",'a',encoding='utf-8') as file:
+                    file.write("!!Exception: "+str(e))
                 pass
+    #gets current data
+    elif (text=="cur_data"):
+                try:
+                    with open("CurrentWeather.json",'r',encoding='utf-8') as file:
+                            f = json.load(file)
+                            data = dict(cur_temp = f['main']['temp'],
+                                        pressure = f['main']['pressure'],
+                                        humidity = f['main']['humidity'],
+                                        description  = f['weather'][0]['description'])
+                            return data
+                except Exception as e:
+                    print("!!Exception: ", e)
+                    with open("error.txt",'a',encoding='utf-8') as file:
+                        file.write("!!Exception: "+str(e))
+                    pass
 
 
 #function return ready to send message
