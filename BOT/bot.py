@@ -38,7 +38,7 @@ def main():
     th2 =Thread(target=Notificator.sending_evening_mes, name="Thread2",args = (bot,))
     th3 =Thread(target=GraphCreator.write_cur_day_weather_to_db, name="Thread3")
     th4 =Thread(target=GraphCreator.write_cur_night_weather_to_db, name="Thread4")
-
+    th5 =Thread(target=GraphCreator.write_hourly_temperature_to_db, name="Thread5")
 
     th1.start()
     time.sleep(2)
@@ -47,6 +47,8 @@ def main():
     th3.start()
     time.sleep(2)
     th4.start()
+    time.sleep(2)
+    th5.start()
     time.sleep(2)
     print(f'Num of active threads: {threading.activeCount()}\n\n')
 

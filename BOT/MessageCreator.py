@@ -160,6 +160,18 @@ def get_data(text):
                     with open("error.txt",'a',encoding='utf-8') as file:
                         file.write("!!Exception: "+str(e))
                     pass
+    #gets current temperature
+    elif (text=="cur_temperature"):
+                    try:
+                        with open("CurrentWeather.json",'r',encoding='utf-8') as file:
+                                f = json.load(file)
+                                cur_temp = f['main']['temp']
+                                return cur_temp
+                    except Exception as e:
+                        print("!!Exception: ", e)
+                        with open("error.txt",'a',encoding='utf-8') as file:
+                            file.write("!!Exception: "+str(e))
+                        pass
 
 
 #function return ready to send message

@@ -5,6 +5,7 @@ import matplotlib.ticker as ticker
 import sqlite3
 import datetime
 import time
+import os
 
 import WeatherAPI
 import MessageCreator
@@ -19,10 +20,10 @@ def write_cur_day_weather_to_db():
         day = int(tomorrow.strftime("%d"))
     else:
         day = int(now.strftime("%d"))
-    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,13,44,10)
+    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,15,0,10)
 
     #some debug features
-    print(f"GraphCreator getter day temperature\n Time to first record: {t_time}")
+    print(f"GraphCreator day temperature\n Time to first record: {t_time}")
     print(f" Now: {now}")
     print(f" Time left: {(t_time -now).seconds}\n")
     time.sleep((t_time -now).seconds)
@@ -61,7 +62,7 @@ def write_cur_night_weather_to_db():
         day = int(tomorrow.strftime("%d"))
     else:
         day = int(now.strftime("%d"))
-    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,13,44,15)
+    t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,3,0,10)
 
     #some debug features
     print(f"GraphCreator night temperature\n Time to first record: {t_time}")
@@ -93,6 +94,46 @@ def write_cur_night_weather_to_db():
     else:
         print("stopped")
 
+def write_hourly_temperature_to_db():
+
+        now = datetime.datetime.now()
+        hours = int(now.strftime("%H"))
+        minutes = int(now.strftime("%M"))
+        if (hours+1<=23):
+            day = int(now.strftime("%d"))
+            t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,hours+1,0,10)
+        else:
+            day = int(tomorrow.strftime("%d"))
+            t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,0,0,10)
+        #some debug features
+        print(f"GraphCreator hourly temperature\n Time to first record: {t_time}")
+        print(f" Now: {now}")
+        print(f" Time left: {(t_time -now).seconds}\n")
+        time.sleep((t_time -now).seconds)
+
+        while(True):
+            today = datetime.datetime.today()
+            date = today.strftime("%d.%m.%Y")
+            now = datetime.datetime.now()
+            hours = int(now.strftime("%H"))
+            minutes = int(now.strftime("%M"))
+            cur_time = f'{hours}:{minutes}'
+
+            WeatherAPI.get_current_weather()
+            cur_temperature = MessageCreator.get_data("cur_temperature")
+
+            with sqlite3.connect('Database.sqlite') as conn:
+                cur = conn.cursor()
+                cur.execute('''INSERT OR IGNORE INTO Temperature (Date,Time,Value)
+                VALUES ( ?,?,?)''',(date,cur_time,cur_temperature))
+                conn.commit()
+                time.sleep(3600)
+        else:
+            print("stopped")
+
+
+
+#get data from database
 def get_data_from_db(text):
     if (text=="Day_temp"):
         with sqlite3.connect('Database.sqlite') as conn:
@@ -124,8 +165,27 @@ def get_data_from_db(text):
                 array_dates.append(Dates[i][0][:5])
             print(array_dates)
             return array_dates
+    elif (text=="cur_temperature"):
+        with sqlite3.connect('Database.sqlite') as conn:
+            cur = conn.cursor()
+            cur.execute('''SELECT Date FROM Temperature ORDER BY Date DESC LIMIT 10''')
+            Dates = cur.fetchall()
+            array_dates = []
+            for i in range(len(Dates)):
+                array_dates.append(Dates[i][0][:5])
+            print(array_dates)
+            return array_dates
 
-def create_graph_image(array_x,array_y1,array_y2):
+#func to rename files to make history circle
+def history_image_renamer(i):
+    index = i+1
+    if ('history_'+f'{i}'+'.png' in os.listdir()):
+        history_image_renamer(index)
+        if(i!=5):
+            os.replace('history_'+f'{i}'+'.png','history_'+f'{index}'+'.png')
+
+
+def create_10days_graph_image(array_x,array_y1,array_y2):
     #x = np.arange(array_y.size)
     #y = np.array(array_y)
     #plt.figure()
@@ -217,7 +277,7 @@ def create_graph_image(array_x,array_y1,array_y2):
     plt.ylabel('Температура', fontsize = 13, fontstyle = "italic",weight='bold', color='white')
     plt.title('График температуры за последние 10 дней', fontsize = 15, weight='bold', color='white')
 
-    legend = graph.legend(shadow = True)
+    legend = graph.legend(shadow = False)
     legend.get_frame().set_facecolor('#F0F8FF')
 
     graph.set_facecolor('#F0FFFF')
@@ -228,14 +288,23 @@ def create_graph_image(array_x,array_y1,array_y2):
     fig.set_figheight(8)
 
     plt.tight_layout()
-    plt.savefig('test.png',quality=100,dpi=300,facecolor=fig.get_facecolor())
+
+    os.chdir(os.getcwd()+'/Graphs')
+    if not('10days.png' in os.listdir()):
+        plt.savefig(r'10days.png',quality=100,dpi=300,facecolor=fig.get_facecolor())
+    else:
+        history_image_renamer(1)
+        os.rename('10days.png','history_1.png')
+        plt.savefig(r'10days.png',quality=100,dpi=300,facecolor=fig.get_facecolor())
+
     plt.show()
 
 def main():
+    write_hourly_temperature_to_db()
     Day_temp = get_data_from_db("Day_temp")
     Night_temp = get_data_from_db("Night_temp")
     Dates = get_data_from_db("Dates")
-    create_graph_image(Dates,Day_temp,Night_temp)
+    create_10days_graph_image(Dates,Day_temp,Night_temp)
 
 if __name__ == "__main__":
     main()
