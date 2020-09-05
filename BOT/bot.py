@@ -10,6 +10,7 @@ import threading
 from threading import Thread
 import sqlite3
 import sys
+from fuzzywuzzy import fuzz
 
 #import my modules
 import BotAPI
@@ -18,6 +19,46 @@ import WeatherAPI
 import Notificator
 import GraphCreator
 
+threads = []
+guard = 0
+
+#class for checking work threads
+class ThreadState:
+    def __init__(self, name, th):
+        """Constructor"""
+        self.name = name
+        self.state = False
+        self.thread = th
+
+    def set_state(self, arg):
+        self.state = arg
+
+    def print(self):
+        print(f'Thread {self.name} : state {self.state} .')
+
+def check_threads_states():
+    info = threading.enumerate()
+    for th in threads:
+        for item in info:
+            if(fuzz.partial_ratio(item.name, th.name) == 100):
+                th.state = True
+                break
+            th.state = False
+    for th in threads:
+        if (th.state == False):
+            th.thread.start()
+            print(f'Crashed: th.name')
+
+def checking_thread():
+    while(1):
+        print("Checking treads")
+        check_threads_states()
+        time.sleep(900)
+
+def polling(bot):
+    while(True):
+        bot.polling()
+        time.sleep(60)
 #MAIN
 def main():
     #start time
@@ -33,24 +74,32 @@ def main():
     bot = BotAPI.create_bot()
 
     #starts threads with notification
-
-    th1 =Thread(target=Notificator.sending_morning_mes, name="Thread1",args = (bot,))
-    th2 =Thread(target=Notificator.sending_evening_mes, name="Thread2",args = (bot,))
-    th3 =Thread(target=GraphCreator.write_cur_day_weather_to_db, name="Thread3")
-    th4 =Thread(target=GraphCreator.write_cur_night_weather_to_db, name="Thread4")
-    th5 =Thread(target=GraphCreator.write_hourly_temperature_to_db, name="Thread5")
-
-    th1.start()
-    time.sleep(2)
-    th2.start()
-    time.sleep(2)
-    th3.start()
-    time.sleep(2)
-    th4.start()
-    time.sleep(2)
-    th5.start()
-    time.sleep(2)
-    print(f'Num of active threads: {threading.activeCount()}\n\n')
+    if (len(threads)<=1):
+        th1 =Thread(target=Notificator.sending_morning_mes, name="Thread1",args = (bot,))
+        th2 =Thread(target=Notificator.sending_evening_mes, name="Thread2",args = (bot,))
+        th3 =Thread(target=GraphCreator.write_cur_day_weather_to_db, name="Thread3")
+        th4 =Thread(target=GraphCreator.write_cur_night_weather_to_db, name="Thread4")
+        th5 =Thread(target=GraphCreator.write_hourly_temperature_to_db, name="Thread5")
+        threads.append(ThreadState(th1.name,th1))
+        threads.append(ThreadState(th2.name,th2))
+        threads.append(ThreadState(th3.name,th3))
+        threads.append(ThreadState(th4.name,th4))
+        threads.append(ThreadState(th5.name,th5))
+        threads[1].thread.start()
+        time.sleep(2)
+        threads[2].thread.start()
+        time.sleep(2)
+        threads[3].thread.start()
+        time.sleep(2)
+        threads[4].thread.start()
+        time.sleep(2)
+        threads[5].thread.start()
+        time.sleep(2)
+        guard.start()
+    #print("TEST")
+    #print(threads)
+    #print(threading.enumerate())
+    #check_thread_states(threads)
 
     #get location
     location = MessageCreator.get_data("location")
@@ -186,20 +235,27 @@ def main():
                     file.write("!Exception: "+str(e))
 
     #bot pulling cycle
-    while True:
-        try:
-            bot.infinity_polling(True)
-        except KeyboardInterrupt:
-                print ('Interrupted')
-                sys.exit(0)
-        except Exception as e:
-            print("!Exception: ", e)
-            with open("error.txt",'a',encoding='utf-8') as file:
-                file.write("!Exception: "+str(e))
-                time.sleep(20)
+    #while(true):
+    try:
+        #th6 =Thread(target=bot.infinity_polling, name="Thread6",args = (True,))
+        th6 =Thread(target=polling, name="Thread6",args = (bot,))
+        th6.start()
+        print("Bot thread start successful!\n")
+        print(f'Num of active threads: {threading.activeCount()}\n\n')
+    except KeyboardInterrupt:
+        print ('Interrupted')
+        sys.exit(0)
+    except Exception as e:
+        print("!Exception: ", e)
+        with open("error.txt",'a',encoding='utf-8') as file:
+            file.write("!Exception: "+str(e))
+            time.sleep(20)
 
 
 
 #start main
 if __name__ == "__main__":
-    main()
+    guard = Thread(target=checking_thread, name="Guard")
+    th0 =Thread(target=main, name="MAIN")
+    threads.append(ThreadState(th0.name,th0))
+    threads[0].thread.start()
