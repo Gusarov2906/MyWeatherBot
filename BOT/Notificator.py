@@ -25,26 +25,31 @@ def sending_morning_mes(bot):
     print(f" Time left: {(t_time -now).seconds}\n")
 
     time.sleep((t_time -now).seconds)
-
+    ok = 0
     #messaging
     while(True):
+        while(ok == 0):
+            try:
+                WeatherAPI.get_forecast_weather()
+                weather_message = MessageCreator.create_message("morning notification")
 
-        WeatherAPI.get_forecast_weather()
-        weather_message = MessageCreator.create_message("morning notification")
+                #get list of 'true' users
+                with sqlite3.connect('Database.sqlite') as conn:
+                    cur = conn.cursor()
+                    cur.execute("""SELECT *FROM Users WHERE notif = 1""")
+                    notif_users = cur.fetchall()
 
-        #get list of 'true' users
-        with sqlite3.connect('Database.sqlite') as conn:
-            cur = conn.cursor()
-            cur.execute("""SELECT *FROM Users WHERE notif = 1""")
-            notif_users = cur.fetchall()
-
-        #send them message
-        print("\nMorning notification:")
-        for user in notif_users:
-            #user[0] is id
-            bot.send_message(user[0],weather_message)
-            print(f" Morning notification for {user[1]}")
-        print()
+                #send them message
+                print("\nMorning notification:")
+                for user in notif_users:
+                    #user[0] is id
+                    bot.send_message(user[0],weather_message)
+                    print(f" Morning notification for {user[1]}")
+                print()
+                ok =1
+            except Exception:
+                print("Exception in morning")
+        ok = 0  
         time.sleep(86400)
     else:
         print("stopped")
@@ -70,26 +75,31 @@ def sending_evening_mes(bot):
     print(f" Now: {now}")
     print(f" Time left: {(t_time -now).seconds}\n")
     time.sleep((t_time -now).seconds)
-
+    ok = 0
     #messaging
     while(True):
+        while(ok == 0):
+            try:
+                WeatherAPI.get_forecast_weather()
+                weather_message = MessageCreator.create_message("evening notification")
 
-        WeatherAPI.get_forecast_weather()
-        weather_message = MessageCreator.create_message("evening notification")
+                #get list of 'true' users
+                with sqlite3.connect('Database.sqlite') as conn:
+                    cur = conn.cursor()
+                    cur.execute("""SELECT *FROM Users WHERE notif = 1""")
+                    notif_users = cur.fetchall()
 
-        #get list of 'true' users
-        with sqlite3.connect('Database.sqlite') as conn:
-            cur = conn.cursor()
-            cur.execute("""SELECT *FROM Users WHERE notif = 1""")
-            notif_users = cur.fetchall()
-
-        #send them message
-        print("\nEvening notification:")
-        for user in notif_users:
-            #user[0] is id
-            bot.send_message(user[0],weather_message)
-            print(f" Evening notification for {user[1]}")
-        print()
+                #send them message
+                print("\nEvening notification:")
+                for user in notif_users:
+                    #user[0] is id
+                    bot.send_message(user[0],weather_message)
+                    print(f" Evening notification for {user[1]}")
+                print()
+                ok = 1
+            except Exception:
+                print("Exception in evening")
+        ok = 0        
         time.sleep(86400)
     else:
         print("stopped")

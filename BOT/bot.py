@@ -10,7 +10,6 @@ import threading
 from threading import Thread
 import sqlite3
 import sys
-from fuzzywuzzy import fuzz
 
 #import my modules
 import BotAPI
@@ -37,28 +36,35 @@ class ThreadState:
         print(f'Thread {self.name} : state {self.state} .')
 
 def check_threads_states():
+    #print(threads)
+    print(threading.enumerate())
     info = threading.enumerate()
     for th in threads:
+        print(th.print())
         for item in info:
             if(fuzz.partial_ratio(item.name, th.name) == 100):
                 th.state = True
                 break
             th.state = False
+        print(th.print())
     for th in threads:
         if (th.state == False):
+            print(f'Crashed: {th.name}')
             th.thread.start()
-            print(f'Crashed: th.name')
 
 def checking_thread():
     while(1):
         print("Checking treads")
         check_threads_states()
-        time.sleep(900)
+        time.sleep(10)
 
 def polling(bot):
     while(True):
-        bot.polling()
-        time.sleep(60)
+        try:
+            bot.polling(none_stop = True)
+        except Exception as e:
+            print(e)
+            time.sleep(15)
 #MAIN
 def main():
     #start time
@@ -72,7 +78,7 @@ def main():
 
     #start bot
     bot = BotAPI.create_bot()
-
+    print('Acttive thread: ', (threading.current_thread()))
     #starts threads with notification
     if (len(threads)<=1):
         th1 =Thread(target=Notificator.sending_morning_mes, name="Thread1",args = (bot,))
@@ -85,6 +91,8 @@ def main():
         threads.append(ThreadState(th3.name,th3))
         threads.append(ThreadState(th4.name,th4))
         threads.append(ThreadState(th5.name,th5))
+        threads[0].thread.start()
+        time.sleep(2)
         threads[1].thread.start()
         time.sleep(2)
         threads[2].thread.start()
@@ -93,9 +101,7 @@ def main():
         time.sleep(2)
         threads[4].thread.start()
         time.sleep(2)
-        threads[5].thread.start()
-        time.sleep(2)
-        guard.start()
+        #guard.start()
     #print("TEST")
     #print(threads)
     #print(threading.enumerate())
@@ -205,6 +211,7 @@ def main():
             bot.send_message(message.chat.id, f'Помощь(доступные команды):\n/help\n/start\n/settings\n/start_notification\n/stop_notification\nПо техническим вопросам обращаться на:\ngusarov2906@gmail.com\n', reply_markup=keyboard1)
             print()
         else:
+            print('Acttive thread: ', (threading.current_thread()))
             bot.send_message(message.chat.id, f'Проверьте правильность введенной команды.\n Для это можно воспользоваться /help', reply_markup=keyboard1)
             print()
 
@@ -255,7 +262,6 @@ def main():
 
 #start main
 if __name__ == "__main__":
-    guard = Thread(target=checking_thread, name="Guard")
+    #guard = Thread(target=checking_thread, name="Guard")
     th0 =Thread(target=main, name="MAIN")
-    threads.append(ThreadState(th0.name,th0))
-    threads[0].thread.start()
+    th0.start()

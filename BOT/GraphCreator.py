@@ -6,6 +6,7 @@ import sqlite3
 import datetime
 import time
 import os
+import threading
 
 import WeatherAPI
 import MessageCreator
@@ -29,6 +30,7 @@ def write_cur_day_weather_to_db():
     time.sleep((t_time -now).seconds)
 
     while(True):
+        start_time = datetime.datetime.now()
         today = datetime.datetime.today()
         date = today.strftime("%d.%m.%Y")
 
@@ -48,8 +50,9 @@ def write_cur_day_weather_to_db():
              WHERE
                 Date = ?''',(Data['cur_temp'],Data['pressure'],Data['humidity'],Data['description'],date))
             conn.commit()
-            print(f"Record to database: {Data}")
-            time.sleep(86400)
+            print(f"Record to database: Day temp {Data}")
+            finish_time = datetime.datetime.now()
+            time.sleep(86400-(finish_time-start_time).seconds)
     else:
         print("stopped")
 
@@ -71,6 +74,7 @@ def write_cur_night_weather_to_db():
     time.sleep((t_time -now).seconds)
 
     while(True):
+        start_time = datetime.datetime.now()
         today = datetime.datetime.today()
         date = today.strftime("%d.%m.%Y")
 
@@ -90,7 +94,8 @@ def write_cur_night_weather_to_db():
             WHERE Date = ?''',(Data['cur_temp'],Data['pressure'],Data['humidity'],Data['description'],date))
             conn.commit()
             print(f"Record to database: Night_temp {Data}")
-            time.sleep(86400)
+            finish_time = datetime.datetime.now()
+            time.sleep(86400-(finish_time-start_time).seconds)
     else:
         print("stopped")
 
@@ -103,6 +108,7 @@ def write_hourly_temperature_to_db():
             day = int(now.strftime("%d"))
             t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,hours+1,0,10)
         else:
+            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
             day = int(tomorrow.strftime("%d"))
             t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,0,0,10)
         #some debug features
@@ -112,6 +118,8 @@ def write_hourly_temperature_to_db():
         time.sleep((t_time -now).seconds)
 
         while(True):
+            start_time = datetime.datetime.now()
+            print(f'Num of active threads and procceses: {threading.activeCount()}')
             today = datetime.datetime.today()
             date = today.strftime("%d.%m.%Y")
             now = datetime.datetime.now()
@@ -127,7 +135,8 @@ def write_hourly_temperature_to_db():
                 cur.execute('''INSERT OR IGNORE INTO Temperature (Date,Time,Value)
                 VALUES ( ?,?,?)''',(date,cur_time,cur_temperature))
                 conn.commit()
-                time.sleep(3600)
+                finish_time = datetime.datetime.now()
+                time.sleep(3600-(finish_time-start_time).seconds)
         else:
             print("stopped")
 
@@ -304,7 +313,7 @@ def main():
     Day_temp = get_data_from_db("Day_temp")
     Night_temp = get_data_from_db("Night_temp")
     Dates = get_data_from_db("Dates")
-    create_10days_graph_image(Dates,Day_temp,Night_temp)
+    #create_10days_graph_image(Dates,Day_temp,Night_temp)
 
 if __name__ == "__main__":
     main()
