@@ -1,4 +1,5 @@
 # MyWeatherBot
+UPDATE(05.09.20): BOT is ALIVE now) <br> 
 Check bot in telegram: @gusarov2906_weather_bot<br>
 It's already work!)<br>
 Bot shows the weather only in Zelenograd now.<br>
