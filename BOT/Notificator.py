@@ -49,8 +49,16 @@ def sending_morning_mes(bot):
                 ok =1
             except Exception:
                 print("Exception in morning")
-        ok = 0  
-        time.sleep(86400)
+        ok = 0
+        now = datetime.datetime.now()
+        hours = int(now.strftime("%H"))
+        if (hours >= 9):
+            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+            day = int(tomorrow.strftime("%d"))
+        else:
+            day = int(now.strftime("%d"))
+        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,9,0,0,)
+        time.sleep((t_time -now).seconds)
     else:
         print("stopped")
 
@@ -66,7 +74,6 @@ def sending_evening_mes(bot):
         day = int(tomorrow.strftime("%d"))
     else:
         day = int(now.strftime("%d"))
-
 
     t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
 
@@ -100,6 +107,15 @@ def sending_evening_mes(bot):
             except Exception:
                 print("Exception in evening")
         ok = 0        
-        time.sleep(86400)
+        now = datetime.datetime.now()
+        #check if message need to send tomorrow
+        hours = int(now.strftime("%H"))
+        if (hours >= 21):
+            tomorrow = datetime.date.today()+ datetime.timedelta(days=1)
+            day = int(tomorrow.strftime("%d"))
+        else:
+            day = int(now.strftime("%d"))
+        t_time = datetime.datetime(int(now.strftime("%Y")),int(now.strftime("%m")),day,21,0,0,)
+        time.sleep((t_time -now).seconds)
     else:
         print("stopped")
