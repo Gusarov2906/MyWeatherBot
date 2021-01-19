@@ -1,7 +1,7 @@
 import requests
 import json
 
-appid = "xxx"
+appid = ""
 city_id = "463829"
 
 def get_weather_data(city_id):
